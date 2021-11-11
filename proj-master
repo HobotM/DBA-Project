@@ -105,3 +105,77 @@ go
         ) default 'M',
         phone varchar(11)
     );
+
+go
+    create table tblDepartment(
+        departmentId int primary key identity (1, 1) not null,
+        name varchar(20)
+    );
+
+go
+    create table tblProduct (
+        productId int primary key identity (1, 1) not null,
+        departmentId int not null references tblDepartment(departmentId),
+        SKU varchar(20) not null,
+        price float not null,
+        brand varchar(30) not null,
+        description varchar(100),
+        name varchar(30) not null,
+        tagline varchar(50),
+        discounted int not null check(
+            discounted = 0
+            OR discounted = 1
+        ) default 0,
+        weight float
+    );
+
+create table tblDeliverySlot (
+    slotId int primary key identity (1, 1) not null,
+    storeId int not null references tblStore(storeId),
+    slotDateTime datetime not null,
+    cost float not null,
+    slotStatus nchar(1) not null check(
+        slotStatus = 0
+        OR slotStatus = 1
+    ) default 0,
+    isFlex nchar(1) not null check(
+        isFlex = 0
+        OR isFlex = 1
+    ) default 0
+);
+
+go
+    create table tblPickupSlot (
+        slotId int primary key identity (1, 1) not null,
+        storeId int not null references tblStore(storeId),
+        slotDateTime datetime not null,
+        cost float not null,
+        slotStatus nchar(1) not null check(
+            slotStatus = 0
+            OR slotStatus = 1
+        ) default 0,
+    );
+
+create table tblOrder (
+    orderId int primary key identity (1, 1) not null,
+    customerId int not null references tblCustomer(customerId),
+    deliverySlotid int null references tblDeliverySlot(slotId),
+    pickupSlotId int null references tblPickupSlot(slotId),
+);
+
+go
+    create table tblTransaction(
+        transactionId int primary key identity (1, 1) not null,
+        orderId int not null,
+        transactionStatus nchar(1) not null check(
+            transactionStatus = 'P'
+            OR transactionStatus = 'C'
+            OR transactionStatus = 'C'
+            OR transactionStatus = 'R'
+        ) default 'P',
+        transactionDate datetime not null,
+        cardType nchar(2) not null,
+        startDate date null,
+        expiryDate date not null,
+        amount float not null
+    );
