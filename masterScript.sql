@@ -1,3 +1,17 @@
+create table tmpCustomer
+(
+	id	int primary key identity (1, 1) not null,
+	name varchar(10)
+);
+
+create table tmpEmail
+(
+    id	int primary key identity (1, 1) not null,
+	custId int foreign key references tmpCustomer(id) on update cascade on delete cascade,
+	name varchar(20)
+);
+
+
 use AMMTescoProject;
 
 go
@@ -27,7 +41,7 @@ go
 go
     create table tblCustomerEmail (
         emailId int primary key identity (1, 1) not null,
-        customerId int not null references tblCustomer(customerId) on update no action on delete cascade,
+        customerId int not null references tblCustomer(customerId) on update cascade on delete cascade,
         email varchar(50)
     );
 
