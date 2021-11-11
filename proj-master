@@ -179,3 +179,70 @@ go
         expiryDate date not null,
         amount float not null
     );
+
+go
+    create table tblOrder (
+        orderId int primary key identity (1, 1) not null,
+        customerId int references tblCustomer(customerId) not null,
+        addressId int references tblAddress(addressId) not null,
+        pickupSlot int references tblPickupSlot(slotId) null,
+        deliverySlot int references tblDeliverySlot(slotId) null,
+        creationDate smalldatetime not null,
+        modifiedDate smalldatetime not null,
+        grandTotal float not null default 0.0,
+        itemCount int not null default 0,
+        pointsEarned int not null default 0,
+        fulfilmentInstructions varchar(100)
+    );
+
+go
+    create table tblOrderItem (
+        itemId int primary key identity (1, 1) not null,
+        orderId int foreign key references tblOrder(orderId) not null,
+        productId int foreign key references tblProduct(productId) not null,
+        quantity int not null,
+        price float not null,
+        totalPrice as ([quantity] * [price])
+    );
+
+go
+    create table tblDiscountedPrice(
+        discountId int primary key identity (1, 1) not null,
+        productId int references tblProduct(productId) not null,
+        price float
+    );
+
+go
+    create table tblProductReview (
+        productReviewId int primary key identity (1, 1) not null,
+        productId int references tblProduct(productId) not null,
+        customerId int references tblCustomer(customerId) not null,
+        bodyText varchar(1000) not null,
+        headlineText varchar(50) not null,
+        rating int check(
+            rating >= 0
+            AND rating <= 100
+        )
+    );
+
+go
+    create table tblDeliveryJob (
+        jobId int primary key identity (1, 1) not null,
+        orderId int foreign key references tblOrder(orderId) not null,
+        routeId int not null,
+        jobStatus nchar(1) check(
+            jobstatus = 'P'
+            OR jobStatus = 'C'
+            OR jobStatus = 'X'
+        )
+    );
+
+go
+    create table tblDeliveryRoute (
+        routeId int primary key identity (1, 1) not null,
+        storeId int references tblStore(storeId) not null,
+        staffId int references tblStaff(staffId) not null,
+        jobCount int
+    );
+
+go
