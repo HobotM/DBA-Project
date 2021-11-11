@@ -59,7 +59,7 @@ go
         clubCardId int primary key identity (1, 1) not null,
         customerId int not null references tblCustomer(customerId) on update no action on delete cascade,
         balance int,
-        creationDate smalldatetime not null
+        creationDate smalldatetime not null 
     );
 
 go
