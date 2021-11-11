@@ -1,0 +1,44 @@
+use AMMTescoProject;
+go
+
+create table tblCustomer
+(
+    customerId      int primary key identity (1,1) not null,
+    addressId       int,
+	fName			varchar(50),
+	lName			varchar(50),
+	emailId			int,
+	phoneNo			varchar(11)
+)
+
+go
+
+create table tblAddress
+(
+	addressId		int primary key identity (1,1) not null,
+	addLine1		varchar(50) not null,
+	addLine2		varchar(50) not null,
+	addLine3		varchar(50) not null,
+	townCity		varchar(50) not null,
+	postcode		varchar(10) not null,
+	eveningPhone	varchar(11) not null,
+	daytimePhone	varchar(11) not null,
+	mobile			varchar(11),
+	description		varchar(50)  not null
+)
+
+create table tblCustomerEmail
+(
+	emailId		int primary key identity (1,1) not null,
+	customerId	int not null references tblCustomer(customerId) on update no action on delete cascade,
+	email		varchar(50)
+)
+
+create table tblCustomerLogin
+(
+	loginId					int primary key identity (1, 1) not null,
+	customerId				int not null references tblCustomer(customerId) on update no action on delete cascade,
+	password				varbinary(128),
+	passwordLastChanged		smalldatetime,
+	lastLogin				smallDateTime
+);
