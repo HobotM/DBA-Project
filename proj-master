@@ -1,44 +1,107 @@
 use AMMTescoProject;
-go
-
-create table tblCustomer
-(
-    customerId      int primary key identity (1,1) not null,
-    addressId       int,
-	fName			varchar(50),
-	lName			varchar(50),
-	emailId			int,
-	phoneNo			varchar(11)
-)
 
 go
+    create table tblCustomer (
+        customerId int primary key identity (1, 1) not null,
+        addressId int,
+        fName varchar(50),
+        lName varchar(50),
+        emailId int,
+        phoneNo varchar(11)
+    );
 
-create table tblAddress
-(
-	addressId		int primary key identity (1,1) not null,
-	addLine1		varchar(50) not null,
-	addLine2		varchar(50) not null,
-	addLine3		varchar(50) not null,
-	townCity		varchar(50) not null,
-	postcode		varchar(10) not null,
-	eveningPhone	varchar(11) not null,
-	daytimePhone	varchar(11) not null,
-	mobile			varchar(11),
-	description		varchar(50)  not null
-)
+go
+    create table tblAddress (
+        addressId int primary key identity (1, 1) not null,
+        addLine1 varchar(50) not null,
+        addLine2 varchar(50) not null,
+        addLine3 varchar(50) not null,
+        townCity varchar(50) not null,
+        postcode varchar(10) not null,
+        eveningPhone varchar(11) not null,
+        daytimePhone varchar(11) not null,
+        mobile varchar(11),
+        description varchar(50) not null
+    );
 
-create table tblCustomerEmail
-(
-	emailId		int primary key identity (1,1) not null,
-	customerId	int not null references tblCustomer(customerId) on update no action on delete cascade,
-	email		varchar(50)
-)
+go
+    create table tblCustomerEmail (
+        emailId int primary key identity (1, 1) not null,
+        customerId int not null references tblCustomer(customerId) on update no action on delete cascade,
+        email varchar(50)
+    );
 
-create table tblCustomerLogin
-(
-	loginId					int primary key identity (1, 1) not null,
-	customerId				int not null references tblCustomer(customerId) on update no action on delete cascade,
-	password				varbinary(128),
-	passwordLastChanged		smalldatetime,
-	lastLogin				smallDateTime
-);
+go
+    create table tblCustomerLogin (
+        loginId int primary key identity (1, 1) not null,
+        customerId int not null references tblCustomer(customerId) on update no action on delete cascade,
+        password varbinary(128),
+        passwordLastChanged smalldatetime,
+        lastLogin smallDateTime
+    );
+
+go
+    create table tblClubCard (
+        clubCardId int primary key identity (1, 1) not null,
+        customerId int not null references tblCustomer(customerId) on update no action on delete cascade,
+        balance int,
+        creationDate smalldatetime not null
+    );
+
+go
+    create table tblAltAddress (
+        altAddressId int primary key identity (1, 1) not null,
+        customerId int not null references tblCustomer(customerId) on update no action on delete cascade,
+        addressId int not null references tblAddress(addressId) on update no action on delete cascade
+    );
+
+go
+    create table tblDivision(
+        divisionId int primary key identity (1, 1) not null,
+        divisionName varchar(50)
+    );
+
+go
+    create table tblRegion(
+        regionId int primary key identity (1, 1) not null,
+        divisionId int not null references tblDivision(divisionId) on update no action on delete no action,
+        regionName varchar(50)
+    );
+
+go
+    create table tblStaff (
+        staffId int primary key identity (1, 1) not null,
+        storeId int,
+        addressId int references tblAddress(addressId) on update no action on delete no action,
+        managerId int foreign key references tblStaff(staffId),
+        fName varchar(50),
+        lName varchar(50),
+        fullName as (rtrim([fName] + ' ' + [lName])),
+        gender nchar(2) null check (
+            gender = 'M'
+            OR gender = 'F'
+            OR gender = 'NB'
+        ) default 'NB',
+        phone varchar(11),
+        dob datetime,
+        hireDate datetime,
+        salary int,
+        email varchar(50),
+        NIN varchar(9),
+        title varchar(50)
+    );
+
+go
+    create table tblStore (
+        storeId int primary key identity (1, 1) not null,
+        regionId int not null references tblregion(regionId),
+        addressId int not null references tblAddress(addressId),
+        managerId int not null references tblStaff(staffId),
+        name varchar(50) not null,
+        type nchar(1) not null check (
+            type = 'H'
+            OR type = 'S'
+            OR type = 'M'
+        ) default 'M',
+        phone varchar(11)
+    );
