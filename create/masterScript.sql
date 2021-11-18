@@ -1,16 +1,13 @@
-create table tmpCustomer
-(
-	id	int primary key identity (1, 1) not null,
-	name varchar(10)
+create table tmpCustomer (
+    id int primary key identity (1, 1) not null,
+    name varchar(10)
 );
 
-create table tmpEmail
-(
-    id	int primary key identity (1, 1) not null,
-	custId int foreign key references tmpCustomer(id) on update cascade on delete cascade,
-	name varchar(20)
+create table tmpEmail (
+    id int primary key identity (1, 1) not null,
+    custId int foreign key references tmpCustomer(id) on update cascade on delete cascade,
+    name varchar(20)
 );
-
 
 use AMMTescoProject;
 
@@ -59,7 +56,7 @@ go
         clubCardId int primary key identity (1, 1) not null,
         customerId int not null references tblCustomer(customerId) on update no action on delete cascade,
         balance int,
-        creationDate smalldatetime not null 
+        creationDate smalldatetime not null
     );
 
 go
@@ -260,3 +257,10 @@ go
     );
 
 go
+    create table tblStockCount (
+        productStockId int primary key identity (1, 1) not null,
+        productId int foreign key references tblProduct(productId) not null,
+        storeId int foreign key references tblStore(storeId) not null,
+        stockCount int,
+        restockTrigger int
+    )
