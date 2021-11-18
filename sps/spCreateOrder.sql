@@ -18,7 +18,6 @@ CREATE procedure dbo.spCreateOrder
     @modifiedDate smalldatetime = default,
     @grandTotal float, 
     @itemCount int, 
-    @pointsEarned int, 
     @fulfilmentInstructions varchar(100) = null
 )
 as
